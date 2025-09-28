@@ -1,146 +1,143 @@
 from manim import *
-import math
+import numpy as np
 
-class LimitsAndContinuity(Scene):
+class Video1_BasicLimits(Scene):
     def construct(self):
         # Title
-        title = Text("Limites et Continuité", font_size=36).to_edge(UP)
-        self.play(Write(title))
-        self.wait(1)
+        title = Text("Fundamental Limits", font_size=48, color=BLUE)
+        subtitle = Text("Building the Foundation", font_size=24, color=GRAY)
+        subtitle.next_to(title, DOWN)
         
-        # Part 1: Introduction to Limits
-        self.next_section("Introduction to Limits", skip_animations=False)
+        self.play(Write(title), Write(subtitle))
+        self.wait(2)
+        self.play(FadeOut(title), FadeOut(subtitle))
+
+class Scene1_PolynomialLimits(Scene):
+    def construct(self):
+        # Scene title
+        scene_title = Text("Polynomial Limits", font_size=36, color=YELLOW)
+        scene_title.to_edge(UP)
+        self.play(Write(scene_title))
         
-        limit_intro = Text("I. Limite d'une fonction en un point", font_size=28).next_to(title, DOWN, buff=0.5)
-        self.play(Write(limit_intro))
-        self.wait(1)
+        # Show the basic rule
+        rule = MathTex(r"\lim_{x \to a} P(x) = P(a)", font_size=40)
+        rule.shift(UP * 2)
+        self.play(Write(rule))
         
-        # Create axes
+        # Example
+        example = MathTex(r"\lim_{x \to 2} (x^2 - 3x + 1)", font_size=32)
+        example.shift(UP)
+        self.play(Write(example))
+        
+        # Solution steps
+        step1 = MathTex(r"= 2^2 - 3(2) + 1", font_size=32)
+        step2 = MathTex(r"= 4 - 6 + 1", font_size=32)
+        step3 = MathTex(r"= -1", font_size=32, color=GREEN)
+        
+        steps = VGroup(step1, step2, step3).arrange(DOWN, aligned_edge=LEFT)
+        steps.next_to(example, DOWN, buff=0.5)
+        
+        for step in steps:
+            self.play(Write(step))
+            self.wait(1)
+        
+        # Graph visualization
         axes = Axes(
-            x_range=[-3, 3, 1],
-            y_range=[-2, 5, 1],
-            axis_config={"color": BLUE},
-        )
+            x_range=[-1, 4, 1],
+            y_range=[-3, 5, 1],
+            axis_config={"color": WHITE}
+        ).scale(0.6).to_corner(DR)
         
-        # Create a function with a limit
-        def func(x):
-            return (x**2 - 1) / (x - 1) if x != 1 else 2
+        func = axes.plot(lambda x: x**2 - 3*x + 1, color=BLUE)
+        point = Dot(axes.coords_to_point(2, -1), color=RED, radius=0.08)
         
-        graph = axes.plot(func, color=YELLOW, x_range=[-2.5, 2.5, 0.01])
-        
-        # Point discontinuity at x=1
-        discontinuity = Dot(axes.c2p(1, 2), color=RED)
-        open_circle = Circle(radius=0.1, color=RED).move_to(axes.c2p(1, 2))
-        
-        self.play(Create(axes))
-        self.play(Create(graph))
-        self.wait(1)
-        
-        # Highlight the discontinuity
-        self.play(Create(open_circle))
-        self.play(FadeIn(discontinuity))
-        self.wait(1)
-        
-        # Show the limit using plain text
-        limit_text = Text("lim f(x) = 2", font_size=24).next_to(axes, RIGHT, buff=0.5)
-        limit_label = Text("lim (x->1) (x^2-1)/(x-1) = 2", font_size=24).next_to(limit_text, DOWN)
-        
-        self.play(Write(limit_text))
-        self.play(Write(limit_label))
-        self.wait(2)
-        
-        # Part 2: Continuity
-        self.next_section("Continuity", skip_animations=False)
-        
-        continuity_title = Text("II. Continuité en un point", font_size=28).next_to(limit_intro, DOWN, buff=0.5)
-        self.play(Write(continuity_title))
-        self.wait(1)
-        
-        # Create a continuous function
-        def continuous_func(x):
-            return x**2
-        
-        continuous_graph = axes.plot(continuous_func, color=GREEN, x_range=[-2, 2, 0.01])
-        
-        # Point at x=1
-        point = Dot(axes.c2p(1, 1), color=GREEN)
-        
-        self.play(Transform(graph, continuous_graph), FadeOut(discontinuity), FadeOut(open_circle))
+        self.play(Create(axes), Create(func))
         self.play(Create(point))
-        self.wait(1)
         
-        # Continuity definition
-        continuity_def = Text("f est continue en a si lim f(x) = f(a)", font_size=24).next_to(continuity_title, DOWN, buff=0.5)
+        # Highlight the point
+        circle = Circle(radius=0.2, color=RED).move_to(point.get_center())
+        self.play(Create(circle))
         
-        self.play(Write(continuity_def))
-        self.wait(2)
+        self.wait(3)
+
+class Scene2_RationalLimits(Scene):
+    def construct(self):
+        scene_title = Text("Rational Function Limits", font_size=36, color=YELLOW)
+        scene_title.to_edge(UP)
+        self.play(Write(scene_title))
         
-        # Part 3: Intermediate Value Theorem
-        self.next_section("Intermediate Value Theorem", skip_animations=False)
+        # Indeterminate form example
+        problem = MathTex(r"\lim_{x \to 1} \frac{x^2 - 1}{x - 1}", font_size=36)
+        problem.shift(UP * 2)
+        self.play(Write(problem))
         
-        ivt_title = Text("Théorème des Valeurs Intermédiaires", font_size=28).next_to(continuity_def, DOWN, buff=0.5)
-        self.play(Write(ivt_title))
-        self.wait(1)
+        # Show 0/0 form
+        indeterminate = MathTex(r"= \frac{0}{0}", font_size=32, color=RED)
+        indeterminate.next_to(problem, RIGHT)
+        self.play(Write(indeterminate))
         
-        # Create a function for IVT
-        def ivt_func(x):
-            return x**3 - 2*x - 1
+        # Factoring
+        factoring = MathTex(r"= \lim_{x \to 1} \frac{(x-1)(x+1)}{x-1}", font_size=32)
+        factoring.next_to(problem, DOWN, buff=0.5)
+        self.play(Write(factoring))
         
-        ivt_graph = axes.plot(ivt_func, color=PURPLE, x_range=[-2, 2, 0.01])
+        # Cancellation
+        simplified = MathTex(r"= \lim_{x \to 1} (x+1)", font_size=32)
+        simplified.next_to(factoring, DOWN)
+        self.play(Write(simplified))
         
-        # Points at x=-1 and x=2
-        point_a = Dot(axes.c2p(-1, 1), color=RED)
-        point_b = Dot(axes.c2p(2, 3), color=RED)
+        # Final answer
+        answer = MathTex(r"= 1 + 1 = 2", font_size=32, color=GREEN)
+        answer.next_to(simplified, DOWN)
+        self.play(Write(answer))
         
-        # Horizontal line at y=0
-        h_line = Line(start=axes.c2p(-2, 0), end=axes.c2p(2, 0), color=BLUE)
+        self.wait(3)
+
+class Scene3_TrigLimits(Scene):
+    def construct(self):
+        scene_title = Text("Essential Trigonometric Limits", font_size=36, color=YELLOW)
+        scene_title.to_edge(UP)
+        self.play(Write(scene_title))
         
-        # Intersection point
-        intersection = Dot(axes.c2p(1.618, 0), color=YELLOW)  # Approximate root
+        # The fundamental trig limit
+        fundamental = MathTex(r"\lim_{x \to 0} \frac{\sin x}{x} = 1", font_size=40, color=BLUE)
+        fundamental.shift(UP * 1.5)
+        self.play(Write(fundamental))
         
-        self.play(Transform(graph, ivt_graph), FadeOut(point))
-        self.play(Create(point_a), Create(point_b))
-        self.play(Create(h_line))
-        self.wait(1)
+        # Related limits
+        related1 = MathTex(r"\lim_{x \to 0} \frac{\tan x}{x} = 1", font_size=32)
+        related2 = MathTex(r"\lim_{x \to 0} \frac{1 - \cos x}{x^2} = \frac{1}{2}", font_size=32)
         
-        # IVT statement
-        ivt_statement = Text("Si f(a) < 0 < f(b) alors il existe c dans [a,b] tel que f(c)=0", font_size=20).next_to(ivt_title, DOWN, buff=0.5)
+        related_group = VGroup(related1, related2).arrange(DOWN, buff=0.5)
+        related_group.next_to(fundamental, DOWN, buff=1)
         
-        self.play(Write(ivt_statement))
-        self.wait(1)
+        self.play(Write(related1))
+        self.play(Write(related2))
         
-        # Highlight the intersection
-        self.play(Create(intersection))
-        self.wait(2)
+        self.wait(3)
+
+class Scene4_LimitOperations(Scene):
+    def construct(self):
+        scene_title = Text("Limit Operations", font_size=36, color=YELLOW)
+        scene_title.to_edge(UP)
+        self.play(Write(scene_title))
         
-        # Part 4: Operations on Continuous Functions
-        self.next_section("Operations on Continuous Functions", skip_animations=False)
+        # Rules
+        rule1 = MathTex(r"\lim(f + g) = \lim f + \lim g", font_size=28)
+        rule2 = MathTex(r"\lim(f \cdot g) = \lim f \cdot \lim g", font_size=28)
+        rule3 = MathTex(r"\lim\left(\frac{f}{g}\right) = \frac{\lim f}{\lim g}", font_size=28)
         
-        ops_title = Text("Opérations sur les fonctions continues", font_size=28).next_to(ivt_statement, DOWN, buff=0.5)
-        self.play(Write(ops_title))
-        self.wait(1)
+        rules = VGroup(rule1, rule2, rule3).arrange(DOWN, buff=0.5)
+        rules.shift(UP * 0.5)
         
-        # Examples of operations
-        sum_text = Text("f + g", font_size=24).shift(LEFT*3)
-        prod_text = Text("f * g", font_size=24).shift(LEFT*1)
-        comp_text = Text("f o g", font_size=24).shift(RIGHT*1)
-        quot_text = Text("f / g", font_size=24).shift(RIGHT*3)
+        for rule in rules:
+            self.play(Write(rule))
+            self.wait(1)
         
-        self.play(Write(sum_text), Write(prod_text), Write(comp_text), Write(quot_text))
-        self.wait(2)
+        # Note
+        note = Text("(provided limits exist and denominators ≠ 0)", 
+                   font_size=20, color=GRAY)
+        note.next_to(rules, DOWN, buff=0.3)
+        self.play(Write(note))
         
-        # Conclusion
-        self.next_section("Conclusion", skip_animations=False)
-        
-        conclusion = Text("Les limites et la continuité sont fondamentales en analyse", font_size=28).next_to(ops_title, DOWN, buff=1)
-        self.play(Write(conclusion))
-        self.wait(2)
-        
-        # Fade out
-        self.play(FadeOut(VGroup(
-            title, limit_intro, continuity_title, ivt_title, ops_title, conclusion,
-            limit_text, limit_label, continuity_def, ivt_statement,
-            sum_text, prod_text, comp_text, quot_text,
-            axes, graph, point_a, point_b, h_line, intersection
-        )))
-        self.wait(1)
+        self.wait(3)
