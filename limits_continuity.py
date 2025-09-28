@@ -32,9 +32,6 @@ class LimitsAndContinuity(Scene):
         discontinuity = Dot(axes.c2p(1, 2), color=RED)
         open_circle = Circle(radius=0.1, color=RED).move_to(axes.c2p(1, 2))
         
-        # Limit point
-        limit_point = Dot(axes.c2p(1, 2), color=GREEN)
-        
         self.play(Create(axes))
         self.play(Create(graph))
         self.wait(1)
@@ -44,9 +41,9 @@ class LimitsAndContinuity(Scene):
         self.play(FadeIn(discontinuity))
         self.wait(1)
         
-        # Show the limit
+        # Show the limit using plain text
         limit_text = Text("lim f(x) = 2", font_size=24).next_to(axes, RIGHT, buff=0.5)
-        limit_label = MathTex(r"\lim_{x \to 1} \frac{x^2 - 1}{x - 1} = 2", font_size=28).next_to(limit_text, DOWN)
+        limit_label = Text("lim (x->1) (x^2-1)/(x-1) = 2", font_size=24).next_to(limit_text, DOWN)
         
         self.play(Write(limit_text))
         self.play(Write(limit_label))
@@ -73,10 +70,7 @@ class LimitsAndContinuity(Scene):
         self.wait(1)
         
         # Continuity definition
-        continuity_def = MathTex(
-            r"f \text{ est continue en } a \text{ si } \lim_{x \to a} f(x) = f(a)",
-            font_size=28
-        ).next_to(continuity_title, DOWN, buff=0.5)
+        continuity_def = Text("f est continue en a si lim f(x) = f(a)", font_size=24).next_to(continuity_title, DOWN, buff=0.5)
         
         self.play(Write(continuity_def))
         self.wait(2)
@@ -110,10 +104,7 @@ class LimitsAndContinuity(Scene):
         self.wait(1)
         
         # IVT statement
-        ivt_statement = MathTex(
-            r"\text{Si } f(a) < 0 < f(b) \text{ alors } \exists c \in [a,b] : f(c) = 0",
-            font_size=24
-        ).next_to(ivt_title, DOWN, buff=0.5)
+        ivt_statement = Text("Si f(a) < 0 < f(b) alors il existe c dans [a,b] tel que f(c)=0", font_size=20).next_to(ivt_title, DOWN, buff=0.5)
         
         self.play(Write(ivt_statement))
         self.wait(1)
@@ -130,10 +121,10 @@ class LimitsAndContinuity(Scene):
         self.wait(1)
         
         # Examples of operations
-        sum_text = MathTex(r"f + g", font_size=24).shift(LEFT*3)
-        prod_text = MathTex(r"f \cdot g", font_size=24).shift(LEFT*1)
-        comp_text = MathTex(r"f \circ g", font_size=24).shift(RIGHT*1)
-        quot_text = MathTex(r"\frac{f}{g}", font_size=24).shift(RIGHT*3)
+        sum_text = Text("f + g", font_size=24).shift(LEFT*3)
+        prod_text = Text("f * g", font_size=24).shift(LEFT*1)
+        comp_text = Text("f o g", font_size=24).shift(RIGHT*1)
+        quot_text = Text("f / g", font_size=24).shift(RIGHT*3)
         
         self.play(Write(sum_text), Write(prod_text), Write(comp_text), Write(quot_text))
         self.wait(2)
